@@ -9,7 +9,7 @@
     "prebuild": "rimraf dist",
     "build": "yarn lint && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "cross-env NODE_ENV=development nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -24,11 +24,15 @@
     "@nestjs/common": "^7.6.15",
     "@nestjs/core": "^7.6.15",
     "@nestjs/platform-express": "^7.6.15",
+    "@nestjs/typeorm": "^7.1.5",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "config": "^3.3.6",
+    "mongodb": "^3.6.6",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.6.6"
+    "rxjs": "^6.6.6",
+    "typeorm": "^0.2.32"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.6.0",
@@ -40,6 +44,7 @@
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",
+    "cross-env": "^7.0.3",
     "eslint": "^7.22.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",
@@ -70,7 +75,6 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   },
-
   "jest-stare": {
     "merge": "true",
     "resultDir": "jest-stare",
