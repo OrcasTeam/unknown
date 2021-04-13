@@ -1,6 +1,8 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UserApplication } from '../application/user.application';
 
+@ApiTags('user')
 @Controller('auth')
 export class AuthController {
   constructor(private userApplication: UserApplication) {}
@@ -12,10 +14,8 @@ export class AuthController {
   //   return this.authService.signUp(authCredentialsDto);
   // }
   //
-  // @Post('/signin')
-  // signIn(
-  //   @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
-  // ): Promise<{ accessToken: string }> {
-  //   return this.authService.signIn(authCredentialsDto);
-  // }
+  @Post('/signin')
+  signIn(): { accessToken: string } {
+    return { accessToken: '123' };
+  }
 }
