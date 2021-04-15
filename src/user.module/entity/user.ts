@@ -1,5 +1,5 @@
 import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
-import { Encryption } from '../../common.module/helper/encryption';
+import { Encryption } from '../../common.module/utls/encryption';
 
 @Entity()
 export class User {
