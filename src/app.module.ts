@@ -2,6 +2,9 @@ import * as config from 'config';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UserModule } from './user.module/user.module';
+import { CommonModule } from './common.module/common.module';
+import { ConfigModule } from '@nestjs/config';
+import { VideoModule } from './video.module/video.module';
 
 const dbConfig = config.get('db');
 
@@ -17,6 +20,12 @@ const typeOrmConfig: TypeOrmModuleOptions = {
 };
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeOrmConfig), UserModule],
+  imports: [
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot(typeOrmConfig),
+    CommonModule,
+    UserModule,
+    VideoModule,
+  ],
 })
 export class AppModule {}

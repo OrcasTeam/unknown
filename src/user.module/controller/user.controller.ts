@@ -1,15 +1,22 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserApplication } from '../application/user.application';
+import { RegisterUserDto } from '../dtos/register-user';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private userApplication: UserApplication) {}
 
-  @Get('test')
-  async test(): Promise<string> {
-    await this.userApplication.create();
-    return 'auth controller test';
+  @Post('register')
+  async register(@Body(ValidationPipe) dto: RegisterUserDto): Promise<boolean> {
+    return await this.userApplication.register(dto);
   }
 }
