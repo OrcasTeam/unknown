@@ -6,7 +6,7 @@ import { logger } from './common.module/log/middleware/logger.middleware';
 import { GlobalExceptionsFilter } from './common.module/exception/global-exception.filter';
 
 async function bootstrap() {
-  const serverConfig: { port: number } = config.get('server');
+  const serverConfig = config.get<{ port: number }>('server');
 
   const app = await NestFactory.create(AppModule);
 

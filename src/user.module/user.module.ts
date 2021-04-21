@@ -10,7 +10,10 @@ import { AuthApplication } from './application/auth.application';
 import { UserController } from './controller/user.controller';
 import { AuthController } from './controller/auth.controller';
 
-const jwtConfig = config.get('jwt');
+const jwtConfig = config.get<{
+  secret: string;
+  expiresIn: string | number;
+}>('jwt');
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
