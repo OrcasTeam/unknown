@@ -34,6 +34,7 @@ const typeOrmConfig: TypeOrmModuleOptions = {
     CommonModule,
     UserModule,
     VideoModule,
+    FileModule,
   ],
 })
 export class AppModule {}

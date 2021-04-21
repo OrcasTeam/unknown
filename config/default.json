@@ -1,11 +1,19 @@
 {
-    "db": {
-        "host": "localhost",
-        "port": "27017",
-        "database": "test"
-    },
-    "jwt": {
-        "expiresIn": "1h",
-        "secret": "topSecret51"
-    }
+  "db": {
+    "host": "localhost",
+    "port": "27017",
+    "database": "test"
+  },
+  "jwt": {
+    "expiresIn": "1h",
+    "secret": "topSecret51"
+  },
+  "minio": {
+    "host": "localhost",
+    "port": 9000,
+    "useSSL": false,
+    "accessKey": "ADMINADMIN",
+    "secretKey": "ADMINADMIN",
+    "bucketRegion": "us-east-1"
+  }
 }

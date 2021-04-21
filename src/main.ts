@@ -1,5 +1,6 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import * as config from 'config';
+import * as fileUpload from 'express-fileupload';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { logger } from './common.module/log/middleware/logger.middleware';
@@ -10,6 +11,11 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
 
+  app.use(
+    fileUpload({
+      limits: { fileSize: 50 * 1024 * 1024 * 1024 },
+    }),
+  );
   app.use(logger);
 
   const { httpAdapter } = app.get(HttpAdapterHost);

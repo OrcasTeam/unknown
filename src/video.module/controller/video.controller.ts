@@ -13,15 +13,8 @@ import { AuthGuard } from '@nestjs/passport';
 @ApiTags('video')
 @Controller('video')
 export class VideoController {
-  constructor(private userApplication: VideoApplication) {}
+  constructor(private videoApplication: VideoApplication) {}
 
-  // @Post('/signup')
-  // signUp(
-  //   @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
-  // ): Promise<void> {
-  //   return this.authService.signUp(authCredentialsDto);
-  // }
-  //
   @UseGuards(AuthGuard('jwt'))
   @Post('/test')
   video(): { accessToken: string } {
