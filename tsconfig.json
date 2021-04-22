@@ -6,15 +6,41 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    // 严格模式
+    "alwaysStrict": true,
+    //  编译出错不再执行
+    "noEmitOnError": true,
+    //  禁用any
+    "noImplicitAny": true,
+    "noImplicitThis": true,
     "target": "ESNext",
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
+
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+
+    //  排除编译的文件
+    "exclude": [
+      "node_modules",
+      "src/assets/json/*.json",
+      "dist",
+      "assets"
+    ],
     "lib": [
-      "es6",
-      "es7",
       "esnext"
+    ],
+    //  包含编译的入口文件
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.js",
+      "test/**/*.ts",
     ]
   }
 }

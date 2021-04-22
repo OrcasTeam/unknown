@@ -1,5 +1,15 @@
 import { Global, Module } from '@nestjs/common';
+import { Logger } from "@/common.module/log/Logger";
 
 @Global()
-@Module({})
-export class CommonModule {}
+@Module({
+  providers: [
+    Logger
+  ],
+  exports: [
+    Logger
+  ]
+})
+export class CommonModule {
+
+}

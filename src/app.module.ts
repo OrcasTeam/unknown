@@ -1,4 +1,4 @@
-import * as config from 'config';
+import config from 'config';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UserModule } from './user.module/user.module';

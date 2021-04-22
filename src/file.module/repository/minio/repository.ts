@@ -1,4 +1,4 @@
-import * as config from 'config';
+import config from 'config';
 import { Client, ItemBucketMetadata } from 'minio';
 import { Readable as ReadableStream } from 'stream';
 import { NotFoundException } from '@nestjs/common';
@@ -21,7 +21,7 @@ export default class MinioRepository extends FileRepository {
     });
   }
 
-  async pathExists(bucketName: string): Promise<boolean> {
+  async rootExists(bucketName: string): Promise<boolean> {
     return this._minioClient.bucketExists(bucketName);
   }
 
@@ -31,8 +31,8 @@ export default class MinioRepository extends FileRepository {
    * @param bucketName bucket 名称
    * @param region
    */
-  async makePath(bucketName: string, region?: string): Promise<void> {
-    if (await this.pathExists(bucketName)) return;
+  async makeRoot(bucketName: string, region?: string): Promise<void> {
+    if (await this.rootExists(bucketName)) return;
     return this._minioClient.makeBucket(
       bucketName,
       region || this._minioConfig.bucketRegion,
@@ -44,8 +44,8 @@ export default class MinioRepository extends FileRepository {
    * 当bucket不存在时,抛出 NotFoundException 异常
    * @param bucketName bucket名称
    */
-  async removePath(bucketName: string) {
-    if (!(await this.pathExists(bucketName)))
+  async removeRoot(bucketName: string) {
+    if (!(await this.rootExists(bucketName)))
       throw new NotFoundException(`not find ${bucketName} bucket`);
     await this._minioClient.removeBucket(bucketName);
   }
@@ -56,7 +56,7 @@ export default class MinioRepository extends FileRepository {
     stream: ReadableStream | Buffer | string,
     metaData?: ItemBucketMetadata,
   ): Promise<string> {
-    await this.makePath(bucketName);
+    await this.makeRoot(bucketName);
     return this._minioClient.putObject(
       bucketName,
       objectName,
@@ -71,7 +71,7 @@ export default class MinioRepository extends FileRepository {
     filePath: string,
     metaData: ItemBucketMetadata,
   ): Promise<string> {
-    await this.makePath(bucketName);
+    await this.makeRoot(bucketName);
     return this._minioClient.fPutObject(
       bucketName,
       objectName,

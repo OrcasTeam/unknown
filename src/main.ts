@@ -1,6 +1,6 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
-import * as config from 'config';
-import * as fileUpload from 'express-fileupload';
+import config from 'config';
+import fileUpload from 'express-fileupload';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { logger } from './common.module/log/middleware/logger.middleware';

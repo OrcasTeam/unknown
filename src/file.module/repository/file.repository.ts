@@ -1,11 +1,11 @@
 import { Readable as ReadableStream } from 'stream';
 
 export default abstract class FileRepository {
-  abstract pathExists(path: string): Promise<boolean>;
+  abstract rootExists(root: string): Promise<boolean>;
 
-  abstract makePath(path: string): Promise<void>;
+  abstract makeRoot(root: string): Promise<void>;
 
-  abstract removePath(path: string): Promise<void>;
+  abstract removeRoot(root: string): Promise<void>;
 
   abstract putFile(
     path: string,
@@ -14,5 +14,5 @@ export default abstract class FileRepository {
     metaData?: Record<string, any>,
   ): Promise<string>;
 
-  abstract getFile(path: string, fileName: string): Promise<ReadableStream>;
+  abstract getFile(root: string, fileName: string): Promise<ReadableStream>;
 }

@@ -9,6 +9,7 @@ import { Logger } from '../log/Logger';
 
 @Catch()
 export class GlobalExceptionsFilter extends BaseExceptionFilter {
+
   catch(exception: unknown | HttpException, host: ArgumentsHost) {
     const status =
       exception instanceof HttpException

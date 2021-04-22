@@ -1,8 +1,11 @@
 export interface IUploadedFileDto {
   name: string;
+
   /** A function to move the file elsewhere on your server */
   mv(path: string, callback: (err: any) => void): void;
+
   mv(path: string): Promise<void>;
+
   /** Encoding type of the file */
   encoding: string;
   /** The mimetype of your file */

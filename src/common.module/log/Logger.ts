@@ -13,31 +13,31 @@ const loggers = {
 };
 
 export class Logger {
-  static trace(...args) {
+  static trace(...args: Array<unknown>) {
     loggers['default'].trace(Logger.getStackTrace(), ...args);
   }
 
-  static debug(...args) {
+  static debug(...args: Array<unknown>) {
     loggers['default'].debug(Logger.getStackTrace(), ...args);
   }
 
-  static log(...args) {
+  static log(...args: Array<unknown>) {
     loggers['default'].info(Logger.getStackTrace(), ...args);
   }
 
-  static info(...args) {
+  static info(...args: Array<unknown>) {
     loggers['default'].info(Logger.getStackTrace(), ...args);
   }
 
-  static warn(...args) {
+  static warn(...args: Array<unknown>) {
     loggers['warn'].warn(Logger.getStackTrace(), ...args);
   }
 
-  static error(...args) {
+  static error(...args: Array<unknown>) {
     loggers['error'].error(Logger.getStackTrace(), ...args);
   }
 
-  static access(...args) {
+  static access(...args: Array<unknown>) {
     loggers['default'].info(Logger.getStackTrace(), ...args);
   }
 
