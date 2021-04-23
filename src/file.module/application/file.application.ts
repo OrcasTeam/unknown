@@ -1,86 +1,79 @@
 import * as fs from "fs";
 import dayjs from "dayjs";
 import * as path from "path";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import makeDir from "make-dir";
 import ffmpegCommand from "fluent-ffmpeg";
-import { PassThrough, Readable as ReadableStream, Stream } from "stream";
+import { Logger } from "@/common.module/log/Logger";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PassThrough, Readable as ReadableStream } from "stream";
 import FileRepository from "../repository/file.repository";
 import { IUploadedFileDto } from "../dtos/uploaded-file.dto";
-import { Logger } from "@/common.module/log/Logger";
+import { EnumRootPath } from "@/file.module/enums/root-path";
 
 @Injectable()
 export default class FileApplication {
-  constructor(private logger: Logger,  private fileRepository: FileRepository) {}
+  constructor(private logger: Logger, private fileRepository: FileRepository) {}
 
   async upload(input: Array<IUploadedFileDto> | IUploadedFileDto): Promise<string> {
     if (!Array.isArray(input)) {
       //  TODO: 需要严谨获取文件后缀
       const ext = path.extname(input.name);
-
-      // const data = ffmpeg({
-      //   MEMFS: [{ name: input.name, data: input.data }],
-      //   //ffmpeg -re -i g:/media/baifa.mp4 -codec copy -f hls -hls_list_size 4 -hls_wrap 20 -hls_time 15
-      // g:/media/demo/index.m3u8 arguments: [ '-i', input.name, '-c:v libx264', '-f hls', '-an', 'test.m3u8', ],
-      // onExit: function (data) { console.log('错误---------------', data); }, });
-
       const bufferStream = new PassThrough();
       bufferStream.end(input.data);
 
-      if (!fs.existsSync("C:/videos")) {
-        fs.mkdirSync("C:/videos");
-      }
-
-      const fileName = Date.now() + "-" + input.md5;
+      const fileName = `${ Date.now() }-${ input.md5 }`;
 
       await this.fileRepository.putFile(
-        "source",
-        this.datePath() + fileName + ext,
+        EnumRootPath.SOURCE,
+        this.datePath() + '/' + fileName + ext,
         input.data
       );
 
-      if (!fs.existsSync(`C:/videos/${ fileName }`)) {
-        fs.mkdirSync(`C:/videos/${ fileName }`);
-      }
 
-      ffmpegCommand(bufferStream)
-        .addOption("-hls_time", "10") //设置每个片段的长度
-        .save(`C:/videos/${ fileName }/playlist.m3u8`)
+       await makeDir(`C:/videos/${ fileName }`)
+
+      //  TODO: 在此使用了使用IO流
+      ffmpegCommand()
+        .input(bufferStream)
+        .seek(0)
+        .videoCodec("libx264")
+        .addOption("-hls_time", String(10))
+        .addOption("-start_number", String(10))
+        .addOption("-hls_list_size", String(0))
+        .addOption("-f", "hls")
+        .addOption("-f", "hls")
+        .addOption("-hls_segment_filename", `C:/videos/${ fileName }/${ fileName }-%d.ts`)
+        .save(`C:/videos/${ fileName }/${ fileName }.m3u8`)
         .on("end", async () => {
           const filePath = fs.readdirSync(`C:/videos/${ fileName }/`);
-          for (const p of filePath) {
-            await this.fileRepository.putFile(
-              "hls",
-              this.datePath() + fileName + "/" + p,
-              fs.readFileSync(`C:/videos/${ fileName }/${ p }`)
-            );
-          }
-        })
-        .on("stderr", function(stderrLine) {
-        })
-        .on("error", function(err, stdout, stderr) {
+          const allPromise: Array<Promise<string>> = filePath.map(p => this.fileRepository.putFile(
+            EnumRootPath.HLS,
+            [this.datePath(), fileName, p].join('/'),
+             fs.readFileSync(`C:/videos/${ fileName }/${ p }`)
+          ));
+          await Promise.all(allPromise);
+
         });
 
       return fileName;
     }
   }
 
-  sourceStream(fileName: string): Promise<ReadableStream> {
-    if (fileName.indexOf("-") <= 0) throw new NotFoundException("file is not find");
-
-    const date = Number(fileName.substr(0, fileName.indexOf("-")));
+  hlsStream(file: string): Promise<ReadableStream> {
+    if (file.indexOf("-") <= 0) throw new NotFoundException("file is not find");
+    //  获取当前时间path
+    const date = Number(file.substr(0, file.indexOf("-")));
     const datePath = this.datePath(date);
-    return this.fileRepository.getFile('source', datePath + fileName);
+    const connectPath = file.endsWith(".ts") ? file.substr(0, file.lastIndexOf("-")) + '/' + file : file + '/' + file + '.m3u8'
+
+    return this.fileRepository.getFile("hls",  datePath + '/' + 'connectPath');
   }
 
-
-  hlsStream(fileName: string): Promise<ReadableStream> {
-    if (fileName.indexOf("-") <= 0) throw new NotFoundException("file is not find");
-    const date = Number(fileName.substr(0, fileName.indexOf("-")));
-    const datePath = this.datePath(date);
-    return this.fileRepository.getFile('hls', datePath + fileName + '/playlist.m3u8');
-  }
-
+  /**
+   * 获取当前日期路径
+   * @param date
+   */
   datePath(date: Date | number | string = Date.now()): string {
-    return dayjs(date).format("YYYY-MM-DD") + "/";
+    return dayjs(date).format("YYYY-MM-DD");
   }
 }
