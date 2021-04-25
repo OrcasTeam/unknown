@@ -1,7 +1,7 @@
 import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger/dist/decorators/api-model-property.decorator';
 
-export class RegisterUserDto {
+export class RegisterUserInput {
   @ApiModelProperty()
   @IsString()
   @MaxLength(11)

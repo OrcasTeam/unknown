@@ -1,8 +1,9 @@
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { RegisterUserDto } from '../dtos/register-user';
+import { Encryption } from "@/common.module/utls/encryption";
+import { UserOutput } from '../dtos/user.output';
+import { RegisterUserInput } from '../dtos/register-user.input';
 import { UserRepository } from '../repository/user.repository';
-import { Encryption } from '../../common.module/utls/encryption';
 
 @Injectable()
 export class UserApplication {
@@ -11,14 +12,19 @@ export class UserApplication {
     private userRepository: UserRepository,
   ) {}
 
-  async register(dto: RegisterUserDto): Promise<boolean> {
+  async register(dto: RegisterUserInput): Promise<UserOutput> {
     if (await this.userRepository.findOne({ phone: dto.phone }))
       throw new ConflictException('当前手机号已注册');
 
-    const user = await this.userRepository.insert({
+    const entity = this.userRepository.create({
       phone: dto.phone,
       password: Encryption.md5Encrypt(dto.password),
-    });
-    return !!user;
+    })
+    const user = await this.userRepository.save(entity);
+    user.password = undefined;
+    return {
+      ...user,
+      id: user.id.toString(),
+    }
   }
 }

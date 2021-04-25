@@ -1,6 +1,6 @@
 import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthCredentialsDto } from '../dtos/auth-credentials';
+import { AuthCredentialsInput } from '../dtos/auth-credentials.input';
 import { AuthApplication } from '../application/auth.application';
 
 @ApiTags('auth')
@@ -18,7 +18,7 @@ export class AuthController {
   //
   @Post('/signin')
   async signIn(
-    @Body(ValidationPipe) dto: AuthCredentialsDto,
+    @Body(ValidationPipe) dto: AuthCredentialsInput,
   ): Promise<{ accessToken: string }> {
     return this.authApplication.signIn(dto);
   }

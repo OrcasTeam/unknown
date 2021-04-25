@@ -1,10 +1,30 @@
-import { Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
-import { Encryption } from '../../common.module/utls/encryption';
+import {
+  Column, CreateDateColumn, DeleteDateColumn,
+  Entity,
+  ObjectID,
+  ObjectIdColumn,
+  UpdateDateColumn
+} from "typeorm";
+import { Encryption } from "@/common.module/utls/encryption";
 
 @Entity()
-export class User {
+export abstract class BaseEntity{
   @ObjectIdColumn()
-  id: ObjectID;
+  id!: ObjectID;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt!: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt?: Date;
+
+
+  @DeleteDateColumn({ type: 'timestamp' })
+  deletedAt?: Date;
+}
+
+@Entity()
+export class User extends BaseEntity{
   @Column({ length: 20 })
   nickName: string;
 

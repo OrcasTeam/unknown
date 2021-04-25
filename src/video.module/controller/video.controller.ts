@@ -1,13 +1,16 @@
 import {
-  Controller,
+  Body,
+  Controller, Get,
   HttpException,
-  HttpStatus,
+  HttpStatus, Param,
   Post,
-  UseGuards,
-} from '@nestjs/common';
+  UseGuards
+} from "@nestjs/common";
+import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { VideoApplication } from '../application/video.application';
-import { AuthGuard } from '@nestjs/passport';
+import { VideoUploadInput } from "@/video.module/dtos/video-upload-input";
+import { VideoOutput } from "@/video.module/dtos/video-output";
 
 @ApiBearerAuth()
 @ApiTags('video')
@@ -15,10 +18,16 @@ import { AuthGuard } from '@nestjs/passport';
 export class VideoController {
   constructor(private videoApplication: VideoApplication) {}
 
-  @UseGuards(AuthGuard('jwt'))
-  @Post('/test')
-  video(): { accessToken: string } {
-    return { accessToken: '123' };
+  // @UseGuards(AuthGuard('jwt'))
+  @Post('/upload')
+  async upload( @Body() dto: VideoUploadInput) {
+    return await this.videoApplication.upload(dto);
+  }
+
+  // @UseGuards(AuthGuard('jwt'))
+  @Get('/:id')
+  async getVideo(@Param('id') id: string): Promise<VideoOutput> {
+    return await this.videoApplication.getVideo(id);
   }
 
   @Post('/error')
